@@ -42,6 +42,10 @@
 
 ### 4, Use the driver module
 
+| Name | dependency library |
+| ---- | ------------------ |
+| LVGL | lvgl/lvgl@8.3.11   |
+
 ### 5,Quick Start
 
 ##### Arduino IDE starts
