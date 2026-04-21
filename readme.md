@@ -36,7 +36,7 @@
 | Operating temperature  | -20~65℃                                                      |
 | Storage temperature    | -40~80℃                                                      |
 | Operation Power        | Module：DC5V  Main Chip：3.3V                                |
-| Size                   | 48*48*33mm                                                   |
+| Size                   | 48\*48*33mm                                                   |
 | Shell                  | Aluminum alloy + plastic + acrylic                           |
 | Net Weight             | 50g                                                          |
 
