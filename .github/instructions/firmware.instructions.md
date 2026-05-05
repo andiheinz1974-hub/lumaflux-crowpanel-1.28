@@ -1,29 +1,40 @@
 ---
-description: "Use when editing embedded firmware, board init, display/touch/input logic, rotary/pushbutton handling, power sequencing, sleep/wake, or networking flow for Elecrow CrowPanel 2.1."
+description: "Use when editing embedded firmware, board init, display/touch/input logic, rotary/pushbutton handling, power sequencing, sleep/wake, or networking flow for Elecrow CrowPanel 1.28."
 applyTo: "**/*.{ino,c,cc,cpp,cxx,h,hpp}"
 ---
 
-# Firmware Instructions (Elecrow CrowPanel 2.1)
+# Firmware Instructions (Elecrow CrowPanel 1.28)
 
-- Keep boot deterministic with staged bring-up: board I2C/power, panel power/reset, display smoke test, LVGL, then services.
+- Keep boot deterministic with staged bring-up: board init, display SPI init, display smoke test, LVGL, then services.
 
-- Keep touch handling robust for CST8XX: guard absent touch, clamp coordinates, and avoid assumptions about event timing.
+## Hardware Pin Reference
+
+- **Display**: GC9A01, 240×240, SPI (SPI2_HOST) — MOSI=GPIO11, SCLK=GPIO12, CS=GPIO10, DC=GPIO13, RST=GPIO14, ~40 MHz
+  - **GC9A01 requires color inversion (`esp_lcd_panel_invert_color(true)`) — hardware-critical, do not change.**
+- **Touch**: CST816D, I2C_NUM_1 — SDA=GPIO4, SCL=GPIO5, INT=GPIO6, RST=GPIO7, address 0x15
+- **Backlight**: GPIO46, LEDC ch0
+- **Encoder**: A=GPIO45, B=GPIO42, both active-low with pull-up
+- **Button**: GPIO41, active-low, internal pull-up
+- **Board**: ESP32-S3
+- **LVGL resolution**: 240×240
+
+- Keep touch handling robust for CST816D: guard absent touch, clamp coordinates, and avoid assumptions about event timing.
 - Keep rotary encoder and pushbutton handling edge-based and debounced to avoid false wake/input bursts.
 - Isolate display/input initialization from WiFi/WLED startup so black-screen triage can run without network dependencies.
 - Prefer runtime-safe fallback paths (safe/minimal mode) over permanent compile-time toggles that can hide GUI regressions.
 - Avoid hidden cross-module ownership of hardware globals; prefer explicit APIs and clear module boundaries.
 - Validate edge cases after edits: black-screen recovery path, wake-from-sleep via touch/rotary/button, no-WiFi boot, repeated reset behavior.
-- After meaningful firmware changes, always build, upload, and verify serial boot + first visible frame on the physical CrowPanel 2.1.
+- After meaningful firmware changes, always build, upload, and verify serial boot + first visible frame on the physical CrowPanel 1.28.
 
 ## Rotary encoder decoding (VERIFIED on hardware — must not regress)
 
-The CrowPanel 2.1 rotary encoder has been debugged and re-solved multiple
+The CrowPanel 1.28 rotary encoder has been debugged and re-solved multiple
 times. The rules below are the outcome of measurement on the real device
 and are mandatory for any code path that produces an encoder tick. Do
 not "simplify" them without re-measuring with a logic probe.
 
-- Pins: A (CLK) = GPIO 42, B (DT) = GPIO 4, both inputs with pull-up.
-  Button is routed through the PCF8574 at bit 5 (active low).
+- Pins: A (CLK) = GPIO45, B (DT) = GPIO42, both inputs with pull-up.
+  Button is GPIO41, active-low, internal pull-up (no PCF8574).
 - One mechanical detent equals HALF a quadrature cycle on A (A toggles
   between high and low with every click). Therefore decode on BOTH
   rising AND falling edges of A. Decoding on only one edge makes every

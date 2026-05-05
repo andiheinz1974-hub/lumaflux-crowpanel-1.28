@@ -1,5 +1,5 @@
 ---
-description: "Use when editing README, release notes, setup docs, or implementation notes for this project."
+description: "Use when editing README, release notes, setup docs, or implementation notes for the CrowPanel 1.28 project."
 applyTo: "**/*.md"
 ---
 # Documentation Guidance

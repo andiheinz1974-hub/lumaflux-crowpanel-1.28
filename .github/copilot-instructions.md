@@ -1,7 +1,7 @@
-# CrowPanel 2.1 Project Guidelines
+# CrowPanel 1.28 Project Guidelines
 
 ## Objective
-Build stable, deterministic firmware for Elecrow CrowPanel 2.1 .
+Build stable, deterministic firmware for Elecrow CrowPanel 1.28.
 
 ## Engineering Defaults
 - Prefer small, reversible changes over broad rewrites.
@@ -13,7 +13,7 @@ Build stable, deterministic firmware for Elecrow CrowPanel 2.1 .
 ## Boot and Display Reliability
 - Keep the boot path staged: board init, display power, display smoke test, LVGL, then services.
 - If black-screen or bootloop occurs, prioritize restoring minimal boot first.
-- Treat panel power sequencing and polarity as hardware-critical logic; avoid casual changes.
+- Treat GC9A01 color inversion (`invert_color=true`) and SPI timing as hardware-critical; avoid casual changes.
 - Keep a fallback path that can run without WiFi/WLED services.
 
 ## Code Quality
